@@ -1,0 +1,28 @@
+2004-01-13  Tom Grimes  <genmasan@hotmail.com>
+        * ddrmat.c: Updated the existing code to compile under kernel 2.6
+	        and gcc 3.2.2. Achieved by comparison with gamecon.c v1.22
+	        found in the 2.6.0 source.
+	* Makefile: Renamed old Makefile to Makefile.old. Under kernel <=
+	        2.4, make -f Makefile.old should still work. For kernel
+	        2.6, make -C <path to kernel source> SUBDIRS=$PWD modules.
+		After that, copy ddrmat.o (or ddrmat.ko) to the
+	        appropriate directory and run depmod -ae. New Makefile and
+	        instructions per <http://lwn.net/Articles/21823/>
+	* README: Inserted a brief explanation of the new compile method.
+
+2003-12-13  Joe Wreschnig  <piman@debian.org>
+	* Use /lib/modules/<version>/build for the kernel source.
+
+2003-05-18  Joe Wreschnig  <piman@debian.org>
+
+	* Makefile: Use $KERNEL_SOURCE variable.
+	* ddrmat.c: Change email address to pyddr-devel.
+	* README: Spell check, and mention gc=0,7 in mini-FAQ.
+	
+2003-05-07  Joe Wreschnig  <piman@debian.org>
+
+	* Split off from the main pyDDR distribution
+	* Change build shell script to a Makefile and s/malign/falign/
+	* Update README
+	* Remove unused 'j' variable in ddrmat.c
+	* Arbitrarily this is ddrmat 0.8.

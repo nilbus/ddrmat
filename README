@@ -1,0 +1,81 @@
+DDR Mat Module for Parallel Ports
+---------------------------------
+This module allows you to use parallel port Playstation controller adapters
+with your DDR mat. It is based off of gamecon.c included with the Linux
+kernel, but tweaked for DDR mats. Note that this *only* for parallel adapters;
+USB is supported via the standard USB joystick drivers. One example of
+such an adapter is the standard one from http://www.buynshop.com.
+
+In addition to this driver, you will need the hid, joydev, and input modules.
+You may also need to link /dev/js0 to /dev/input/js0.
+
+This module is *not* approved by any main kernel developers. It may make
+your joystick fail. That being said, it does seem to work for many
+people.
+
+Compiling & Installing, Linux 2.6
+---------------------------------
+The compilation procedure under kernel 2.6 is
+  # make -C <path to kernel source> SUBDIRS=$PWD modules
+
+The path given to make must point to a functional source tree used to compile
+the running kernel.  See <http://lwn.net/Articles/21823/> for a detailed
+explanation.
+
+To insert the module,
+  # insmod ./ddrmat.ko gc=0,7
+
+Finish installing the module by copying it to the appropriate directory and
+running `depmod -ae`.  [This whole section could be simplified by rewriting
+the makefile.]
+
+Compiling & Installing, Linux 2.4
+---------------------------------
+To compile the module, run `make -f Makefile.old'. You will need to have the
+kernel source properly linked under /lib/modules (this should be done
+automatically when you first compile the kernel).
+
+If you want to test it before you install it, you can
+  # insmod ./ddrmat.o gc=0,7
+as root after you compile it, and try running a program that uses the
+joystick devices.
+
+To install it, run `make install'.
+
+Once installed, you can insert it via `modprobe ddrmat gc=0,7` or any of
+the standard module mechanisms. A sample /etc/modules.conf entry might
+look like:
+
+options ddrmat gc=0,7
+pre-install ddrmat modprobe parport_pc && modprobe joydev
+
+It Doesn't Work!
+----------------
+0. This module is *not* for USB mats, only parallel ones.
+
+1. Make sure you have the parport, joydev, input, and hid modules loaded,
+   as well as the ddrmat module.
+
+2. Are you passing in gc=0,7 as an argument? Do so.
+
+3. If you're using lp.o (parallel printer support), disable it, and turn off
+   anything that might use it, like a printing daemon. Then try reinserting
+   the ddrmat module.
+
+4. Make sure /dev/js0 is linked to /dev/input/js0, and your user has read
+   permission to /dev/input/js0 (`chmod 444 /dev/input/js0').
+
+5. Are you running DevFS? Don't. (Especially in 2.6.)
+
+6. Is your parallel port turned on in your BIOS? Many times (especially
+   on laptops) it is off by default, or because you forgot.
+
+If it still doesn't work, drop by #pyddr on irc.freenode.net, or email
+pyddr-discuss@icculus.org.
+
+Thanks
+------
+Many thanks to Vojtech for his help and guidance in hacking around with
+his gamecon module!
+
+Tom Grimes, for porting this driver to Linux 2.6.
