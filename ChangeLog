@@ -1,3 +1,13 @@
+2004-05-24  Joe Wreschnig  <piman@debian.org>
+	* README: Update to reflect the new build and installation methods
+		from Ed's patch.
+
+2004-05-24  Ed Anderson  <nilbus@nilbus.com>
+	* ddrmat.c: Compile on kernels without parport_enumerate (2.6.x)
+		and with the old input_dev struct (2.4.x).
+	* Makefile: Detect kernel version and act accordingly.
+	* Makefile.old: Removed
+
 2004-01-13  Tom Grimes  <genmasan@hotmail.com>
         * ddrmat.c: Updated the existing code to compile under kernel 2.6
 	        and gcc 3.2.2. Achieved by comparison with gamecon.c v1.22

@@ -9,6 +9,8 @@
  *
  * Updated by Tom Grimes on 13-January 2004 using
  * gamecon.c v1.22 for compilation in Linux 2.6
+ * Updated by Ed Anderson on 25 May 2004
+ * for compatibility with both kernel ver 2.4 and 2.6.
  */
 
 /*
@@ -227,14 +229,22 @@ static struct gc __init *gc_probe(int *config)
 {
 	struct gc *gc;
 	struct parport *pp;
-	int i, j, psx;
+	int j, psx, i=0;
 	unsigned char data[32];
 
 	if (config[0] < 0)
 		return NULL;
 
+	/* parport_enumerate was deprecated and does not work in the 2.6 kern
 	for (pp = parport_enumerate(); pp && (config[0] > 0); pp = pp->next)
 		config[0]--;
+	*/
+	pp = parport_find_number(0);
+	while (pp && config[0] > 0) {
+		config[0]--;
+		pp = parport_find_number(++i);
+	}
+	
 
 	if (!pp) {
 		printk(KERN_ERR "ddrmat.c: no such parport\n");
@@ -325,18 +335,21 @@ static struct gc __init *gc_probe(int *config)
 				}
 				break;
 		}
-//              gc->dev[i].name = gc_names[config[i + 1]];
-//              gc->dev[i].idbus = BUS_PARPORT;
-//              gc->dev[i].idvendor = 0x0001;
-//              gc->dev[i].idproduct = config[i + 1];
-//              gc->dev[i].idversion = 0x0100;
-		
-		gc->dev[i].name = gc_names[config[i + 1]];
-//		gc->dev[i].phys = gc->phys[i];
+                gc->dev[i].name = gc_names[config[i + 1]];
+#ifndef init_input_dev
+//2.4 kernel
+		gc->dev[i].idbus = BUS_PARPORT;
+                gc->dev[i].idvendor = 0x0001;
+                gc->dev[i].idproduct = config[i + 1];
+                gc->dev[i].idversion = 0x0100;
+#else
+//2.6 kernel
+ 		//gc->dev[i].phys = gc->phys[i];
                 gc->dev[i].id.bustype = BUS_PARPORT;
                 gc->dev[i].id.vendor = 0x0001;
                 gc->dev[i].id.product = config[i + 1];
                 gc->dev[i].id.version = 0x0100;
+#endif
 	}
 
 	parport_release(gc->pd);

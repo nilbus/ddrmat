@@ -13,41 +13,39 @@ This module is *not* approved by any main kernel developers. It may make
 your joystick fail. That being said, it does seem to work for many
 people.
 
-Compiling & Installing, Linux 2.6
----------------------------------
-The compilation procedure under kernel 2.6 is
-  # make -C <path to kernel source> SUBDIRS=$PWD modules
+Dance pads must be plugged in at the time the module is loaded but 
+afterward can be unplugged and plugged in freely.
 
-The path given to make must point to a functional source tree used to compile
-the running kernel.  See <http://lwn.net/Articles/21823/> for a detailed
-explanation.
+Compiling & Installing
+----------------------
+For any kernel version, just run
+  $ make
+to compile the kernel.
 
 To insert the module,
   # insmod ./ddrmat.ko gc=0,7
+(or on 2.4 kernels, ddrmat.o rather than .ko)
 
-Finish installing the module by copying it to the appropriate directory and
-running `depmod -ae`.  [This whole section could be simplified by rewriting
-the makefile.]
+Finish installing the module by running
+  # make install
+  # depmod -ae
 
-Compiling & Installing, Linux 2.4
----------------------------------
-To compile the module, run `make -f Makefile.old'. You will need to have the
-kernel source properly linked under /lib/modules (this should be done
-automatically when you first compile the kernel).
+Once installed, you can insert it via
+  # modprobe ddrmat gc=0,7
 
-If you want to test it before you install it, you can
-  # insmod ./ddrmat.o gc=0,7
-as root after you compile it, and try running a program that uses the
-joystick devices.
+If you have more than one parallel port, load the module with the 
+additional gc_2 option:
+  # modprobe ddrmat gc=0,7 gc_2=1,7
 
-To install it, run `make install'.
-
-Once installed, you can insert it via `modprobe ddrmat gc=0,7` or any of
-the standard module mechanisms. A sample /etc/modules.conf entry might
-look like:
+If you want to type less, you can add something like the following to
+your /etc/modules.conf:
 
 options ddrmat gc=0,7
 pre-install ddrmat modprobe parport_pc && modprobe joydev
+
+Then, just running
+  # modprobe ddrmat
+should work.
 
 It Doesn't Work!
 ----------------
@@ -65,7 +63,8 @@ It Doesn't Work!
 4. Make sure /dev/js0 is linked to /dev/input/js0, and your user has read
    permission to /dev/input/js0 (`chmod 444 /dev/input/js0').
 
-5. Are you running DevFS? Don't. (Especially in 2.6.)
+5. Are you running DevFS? Don't. (Especially in 2.6.) (Ed claims that
+   it might work under DevFS now. But don't expect us to support it.)
 
 6. Is your parallel port turned on in your BIOS? Many times (especially
    on laptops) it is off by default, or because you forgot.
@@ -79,3 +78,5 @@ Many thanks to Vojtech for his help and guidance in hacking around with
 his gamecon module!
 
 Tom Grimes, for porting this driver to Linux 2.6.
+
+Ed Anderson, for porting the driver to more recent 2.6 and 2.4 kernels.
