@@ -1,3 +1,10 @@
+2004-06-23  Joe Wreschnig  <piman@debian.org>
+	* ddrmat.c: Purge //-style comments.
+
+2004-06-23  Ed Anderson  <nilbus@nilbus.com>
+	* ddrmat.c: Fix kernel version detection breakage in 2.6.7+.
+	* Makefile: Use KERNEL_VERSION_NUMBER in KERNEL_SOURCE definition
+
 2004-05-24  Joe Wreschnig  <piman@debian.org>
 	* README: Update to reflect the new build and installation methods
 		from Ed's patch.

@@ -192,10 +192,10 @@ static void gc_timer(unsigned long private)
 				input_report_key(dev + i, BTN_START,  ~data[0] & 0x08);
 				input_report_key(dev + i, BTN_SELECT, ~data[0] & 0x01);
 
-        input_report_key(dev+i, BTN_TL, !(data[0] & 0x80));   //left button
-        input_report_key(dev+i, BTN_TR, !(data[0] & 0x20));   //right button
-        input_report_key(dev+i, BTN_TL2, !(data[0] & 0x40));  //down button
-        input_report_key(dev+i, BTN_TR2, !(data[0] & 0x10));  //up button
+        input_report_key(dev+i, BTN_TL, !(data[0] & 0x80));   /* left button */
+        input_report_key(dev+i, BTN_TR, !(data[0] & 0x20));   /* right button */
+        input_report_key(dev+i, BTN_TL2, !(data[0] & 0x40));  /* down button */
+        input_report_key(dev+i, BTN_TR2, !(data[0] & 0x10));  /* up button */
 
 				break;
 		}
@@ -336,15 +336,12 @@ static struct gc __init *gc_probe(int *config)
 				break;
 		}
                 gc->dev[i].name = gc_names[config[i + 1]];
-#ifndef init_input_dev
-//2.4 kernel
+#ifdef EVIOCGREP /* This define disappeared from input.h as of 2.6. */
 		gc->dev[i].idbus = BUS_PARPORT;
                 gc->dev[i].idvendor = 0x0001;
                 gc->dev[i].idproduct = config[i + 1];
                 gc->dev[i].idversion = 0x0100;
-#else
-//2.6 kernel
- 		//gc->dev[i].phys = gc->phys[i];
+#else /* 2.6 kernel */
                 gc->dev[i].id.bustype = BUS_PARPORT;
                 gc->dev[i].id.vendor = 0x0001;
                 gc->dev[i].id.product = config[i + 1];
@@ -363,7 +360,6 @@ static struct gc __init *gc_probe(int *config)
 	for (i = 0; i < 5; i++) 
 		if (gc->pads[0] & gc_status_bit[i]) {
 			input_register_device(gc->dev + i);
-//			printk(KERN_INFO "input%d: DDR mat on %s\n", gc->dev[i].number, gc->pd->port->name);
 			printk(KERN_INFO "input: %s on %s\n", gc->dev[i].name, gc->pd->port->name);
 
 		}

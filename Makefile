@@ -1,7 +1,7 @@
 obj-m := ddrmat.o
 PWD:= $(shell pwd)
 KERNEL_VERSION_NUMBER ?= $(shell uname -r)
-KERNEL_SOURCE ?= /lib/modules/$(shell uname -r)/build
+KERNEL_SOURCE ?= /lib/modules/$(KERNEL_VERSION_NUMBER)/build
 MODULE_PATH ?= $(DESTDIR)/lib/modules/$(KERNEL_VERSION_NUMBER)/kernel/drivers/char/joystick
 ifeq "$(shell echo $(KERNEL_VERSION_NUMBER)|cut -b 1-3)" "2.6"
 EXT:=ko
