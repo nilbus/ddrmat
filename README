@@ -20,7 +20,9 @@ Compiling & Installing
 ----------------------
 For any kernel version, just run
   $ make
-to compile the kernel.
+to compile the module. You may need write permission to your kernel
+build tree, which means you might need to be root if you compiled
+your kernel as root.
 
 To insert the module,
   # insmod ./ddrmat.ko gc=0,7
